@@ -49,8 +49,6 @@ DWORD create_requester(PIFilter *iFilter) {
   DWORD req = TVOpenFilterReqEx(iFilter, width, height, NULL, NULL,
                                 PIRF_HIDDEN_REQ, FILTERREQ_NO_TBAR);
 
-  TVGrabTicks(iFilter, req, PITICKS_FLAG_ON);
-
   return req;
 }
 
@@ -137,6 +135,10 @@ int FAR PASCAL PI_Msg(PIFilter *iFilter, INTPTR iEvent, INTPTR iReq,
   switch (iEvent) {
   case PICBREQ_TICKS: // Called every 20 milliseconds at each timer ticks
     processGeorgeCommands(iFilter);
+    break;
+  case PICBREQ_OPEN:
+    spdlog::info("PI_Msg Open - Activating Ticks");
+    TVGrabTicks(iFilter, iReq, PITICKS_FLAG_ON);
     break;
   case PICBREQ_CLOSE:
     // The requester is closed
