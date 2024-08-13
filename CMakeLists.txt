@@ -44,7 +44,22 @@ include_directories("${TVPAINT_SDK_FOLDER}/include")
 
 # Search for source files and configure library
 file(GLOB SOURCES "src/*.cpp" "src/*.hpp")
-add_library(${PROJECT_NAME} SHARED ${SOURCES} library.def "${TVPAINT_SDK_FOLDER}/lib/dllx.c")
+
+if(APPLE)
+    add_library(${PROJECT_NAME} MODULE ${SOURCES} "${TVPAINT_SDK_FOLDER}/lib/dllx.c")
+
+    # Use export.txt for symbol export of the key functions
+    set_target_properties(${PROJECT_NAME} PROPERTIES LINK_FLAGS "-Wl,-exported_symbols_list,${CMAKE_SOURCE_DIR}/exports.txt")
+
+    # Set properties to turn it into a bundle
+    set_target_properties(${PROJECT_NAME} PROPERTIES BUNDLE TRUE BUNDLE_EXTENSION "bundle" )
+    
+    # Install the Info.plist into the bundle
+    set_target_properties(${PROJECT_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${CMAKE_SOURCE_DIR}/resources/Info.plist )
+
+else()
+    add_library(${PROJECT_NAME} SHARED ${SOURCES} library.def "${TVPAINT_SDK_FOLDER}/lib/dllx.c")
+endif()
 
 # Link libraries
 target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)

@@ -1,0 +1,14 @@
+
+// Tell conan to install dependencies into the build folder
+// Specify that we need to compile for x86_64 and NOT armv8 as it wants to on Apple Silicon chips
+conan install . --output-folder=build --build=missing -s="arch=x86_64"
+
+cd build
+
+// Configure the cmake
+cmake .. -DCMAKE_BUILD_TYPE=release -DCMAKE_TOOLCHAIN_FILE="conan_toolchain.cmake" -"DTVPAINT_SDK_FOLDER=/Users/jimmigravesen/Documents/tvpaint_build/TVPaint_SDK"
+
+cmake --build .
+
+// Install the bundle into the Plugin folder
+cp -rf tvpaint-rpc.bundle "/Applications/TVPaint Animation 11.7 Pro.app/Contents/Resources/Plugins/.

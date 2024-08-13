@@ -1,7 +1,9 @@
 #include <codecvt>
 #include <locale>
 #include <string>
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#endif
 
 std::string home_dir();
 std::string to_utf8(std::string codepage_str);
